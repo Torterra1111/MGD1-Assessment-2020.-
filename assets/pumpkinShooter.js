@@ -337,6 +337,7 @@ class BasicEnemy
             this.sImage = new Image();
             this.sImage.src = "C R A B.png";
             this.Remove = false;
+            this.hit = false;
 
             this.bump = getRandomNumber(1,2);
             this.AI = getRandomNumber(1,3);
@@ -370,9 +371,30 @@ class BasicEnemy
                 this.Remove = true;
             }
              //Only shoot after TIMEFRAME
-			 }
+            if(this.hits(pShip))
+            {
+                this.Remove = true;
+                this.Hit = true;
+            }
+			}
+
     }
 
+    hits(object)
+    {
+        var vX = (this.x + (this.width / 2)) - (object.x + (object.width / 2));
+        var vY = (this.y + (this.height / 2)) - (object.y + (object.height / 2));
+        var hWidths = (this.width / 2) + (object.width / 2);
+        var hHeights = (this.height / 2) + (object.height / 2);
+        if (Math.abs(vX) < hWidths && Math.abs(vY) < hHeights)
+        {
+            return true
+        }
+        else
+        {
+            return false;
+        }
+    }
     PickAI(Choice, delta)
     {
         switch(Choice) {
@@ -490,7 +512,11 @@ class TankEnemy
         {
             this.Remove = true;
         }
-             //Only shoot after TIMEFRAME
+        if(this.hits(pShip))
+        {
+            this.Remove = true;
+            this.Hit = true;
+        }
     }
 
     hits(object)
@@ -617,6 +643,11 @@ class SpeedyEnemy
             {
                 this.Remove = true;
             }
+            if(this.hits(pShip))
+            {
+                this.Remove = true;
+                this.Hit = true;
+            }
     }
 
     PickAI(Choice, delta)
@@ -710,7 +741,11 @@ class ShooterEnemy
         {
             this.Remove = true;
         }
-
+        if(this.hits(pShip))
+        {
+            this.Remove = true;
+            this.Hit = true;
+        }
         if(this.ShootTimer>1750)
         {
             //Autofire?
@@ -943,7 +978,10 @@ class BossEnemy
              //Add random velocities
              this.TimerC = new Date().getTime();
           }
-
+          if(this.hits(pShip))
+          {
+                lives -= 999
+          }
     }
 
     hits(object)
@@ -1314,7 +1352,10 @@ function update(delta)
             {
                 var Kaboom = new ExploEffect(EnemyWave[i].x,EnemyWave[i].y,EnemyWave[i].width,EnemyWave[i].height);
                 Explosions.push(Kaboom);
-                EnemyBoom.pause();
+                if(EnemyWave[i].Hit)
+                {
+                    lives -=1;
+                }
                 EnemyBoom.play();
                 EnemyWave.splice(i,1);
             }
@@ -1429,7 +1470,10 @@ function SpawnWave()
         if(wave == bossSpawn) //If boss fight
         {
             EnemyWave[0] = new BossEnemy(((canvas.width/2)-153), (0-170));
-            //Spawn mines
+            if(lives < 3)
+            {
+                lives++;
+            }
             bossSpawn +=5;
         }
         else //Not a boss fight
