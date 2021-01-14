@@ -81,7 +81,7 @@ class PlayerShip
         }
         if (keys[38]) //Up
         {
-             if(pShip.y>400)
+             if(pShip.y>40)
              {
                 pShip.y -= delta * this.speed;
 
@@ -714,6 +714,7 @@ class ShooterEnemy
             this.AI = getRandomNumber(1,3);
             this.ShootTimer = new Date().getTime() - this.Timer;
             this.ShootyShoot;
+            this.ShootAbility = 1750 + getRandomNumber(250,500);
     }
 
     render()
@@ -746,14 +747,14 @@ class ShooterEnemy
             this.Remove = true;
             this.Hit = true;
         }
-        if(this.ShootTimer>1750)
-        {
-            //Autofire?
-            this.ShootyShoot = new EnemyBullet(this.x+15,this.y);
-            eBullet.push(this.ShootyShoot);
-            this.Timer = new Date().getTime();
-        }
 
+            if(this.ShootTimer>this.ShootAbility && this.y > 0)
+            {
+                //Autofire?
+                this.ShootyShoot = new EnemyBullet(this.x+15,this.y);
+                eBullet.push(this.ShootyShoot);
+                this.Timer = new Date().getTime();
+            }
 
     }
 
